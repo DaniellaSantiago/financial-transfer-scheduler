@@ -13,11 +13,11 @@ public class Transfer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String contaOrigem;
-    private String contaDestino;
-    private BigDecimal valor;
-    private BigDecimal taxa;
-    private BigDecimal valorTotal;
-    private LocalDate dataAgendamento;
-    private LocalDate dataTransferencia;
+    private String accountOrigin;
+    private String accountDestination;
+    private BigDecimal value;
+    private BigDecimal tax;
+    private BigDecimal totalValue;
+    private LocalDate dateScheduling;
+    private LocalDate dateTransference;
 }
