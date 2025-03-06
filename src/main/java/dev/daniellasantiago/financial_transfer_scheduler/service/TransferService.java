@@ -3,11 +3,12 @@ package dev.daniellasantiago.financial_transfer_scheduler.service;
 import dev.daniellasantiago.financial_transfer_scheduler.model.entity.Transfer;
 import dev.daniellasantiago.financial_transfer_scheduler.model.util.TransferTax;
 import dev.daniellasantiago.financial_transfer_scheduler.repository.TransferRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Service
 public class TransferService {
@@ -32,8 +33,8 @@ public class TransferService {
         return transferRepository.save(transfer);
     }
 
-    public List<Transfer> listTransfers() {
-        return transferRepository.findAll();
+    public Page<Transfer> listTransfers(Pageable pageable) {
+        return transferRepository.findAll(pageable);
     }
 
     private TransferTax findTax(long days) {
