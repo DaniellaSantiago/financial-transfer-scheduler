@@ -29,6 +29,23 @@
       </tbody>
     </table>
     <p v-if="transfers.length === 0" class="message">No transfers found.</p>
+
+    <div v-if="transfers.length" class="pagination">
+      <label for="pageSize">Items per page:</label>
+      <select id="pageSize" v-model="pageSize" @change="goToPage(0)">
+        <option v-for="size in availablePageSizes" :key="size" :value="size">
+          {{ size }}
+        </option>
+      </select>
+
+      <button @click="goToPage(0)" :disabled="page === 0">«</button>
+      <button @click="goToPage(page - 1)" :disabled="page === 0">‹</button>
+
+      <span>{{ page + 1 }} of {{ totalPages }}</span>
+
+      <button @click="goToPage(page + 1)" :disabled="page + 1 === totalPages">›</button>
+      <button @click="goToPage(totalPages - 1)" :disabled="page + 1 === totalPages">»</button>
+    </div>
   </div>
 
   <TransferForm v-if="showTransferForm" @cancel="showTransferForm=false" @saved="handleSave"/>
@@ -45,12 +62,16 @@ export default {
     return {
       transfers: [],
       showTransferForm: false,
+      page: 0,
+      pageSize: 20,
+      totalPages: 1,
+      availablePageSizes: [5, 10, 20, 50, 100]
     };
   },
   methods: {
     async loadTransfers() {
       try {
-        const response = await fetch("/api/transfers");
+        const response = await fetch(`/api/transfers?page=${this.page}&size=${this.pageSize}`);
 
         if (!response.ok) {
             throw new Error("Failed to fetch transfers");
@@ -58,6 +79,7 @@ export default {
 
         const data = await response.json();
         this.transfers = data.content;
+        this.totalPages = data.totalPages;
       } catch (error) {
         console.error("Error loading transfers", error);
       }
@@ -67,7 +89,11 @@ export default {
       return isNaN(dateObj) ? "Invalid date" : dateObj.toLocaleDateString("pt-BR");
     },
     handleSave() {
-      this.showTransferForm=false;
+      this.showTransferForm = false;
+      this.loadTransfers();
+    },
+    goToPage(page) {
+      this.page = page;
       this.loadTransfers();
     }
   },
@@ -88,10 +114,17 @@ export default {
 }
 
 .statement-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
 }
 
 table {
