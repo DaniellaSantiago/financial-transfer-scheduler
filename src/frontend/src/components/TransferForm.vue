@@ -130,6 +130,10 @@ input {
   box-sizing: border-box;
 }
 
+input[readonly] {
+  background: #c6c6c6
+}
+
 .button-container {
   display: flex;
   gap: 12px;
