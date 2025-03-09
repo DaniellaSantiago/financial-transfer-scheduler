@@ -1,4 +1,5 @@
 <template>
+  <div class="background"></div>
   <div class="form-container">
     <h2>Schedule Transfer</h2>
     <form @submit.prevent="scheduleTransfer">
@@ -27,7 +28,10 @@
         <input v-model="transfer.dateTransference" type="date" required />
       </div>
 
-      <button type="submit" class="btn">To schedule</button>
+      <div class="button-container">
+        <button @click="cancel" class="btn btn-secondary">Cancel</button>
+        <button type="submit" class="btn">To schedule</button>
+      </div>
     </form>
     <p v-if="message" class="message">{{ message }}</p>
   </div>
@@ -63,6 +67,7 @@ export default {
             }
 
             this.message = "Transfer scheduled successfully!";
+            this.$emit("saved")
             this.clearForm();
         } catch (error) {
             this.message = "Error scheduling transfer. Please check the data.";
@@ -77,11 +82,22 @@ export default {
             dateTransference: "",
         };
     },
+    cancel() {
+        this.$emit("cancel")
+    },
   },
 };
 </script>
 
 <style scoped>
+.background {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: rgb(100 100 100 / 80%);
+}
 .form-container {
   max-width: 400px;
   margin: auto;
@@ -89,6 +105,11 @@ export default {
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #f9f9f9;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
 }
 
 .form-group {
@@ -106,6 +127,12 @@ input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.button-container {
+  display: flex;
+  gap: 12px;
 }
 
 .btn {
@@ -120,6 +147,14 @@ input {
 
 .btn:hover {
   background-color: #218838;
+}
+
+.btn-secondary {
+  background-color: #535854;
+}
+
+.btn-secondary:hover {
+  background-color: #3e423f
 }
 
 .mensagem {

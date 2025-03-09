@@ -1,6 +1,9 @@
 <template>
   <div class="statement-container">
-    <h2>Transfer Statement</h2>
+    <div class="statement-header">
+        <h2>Transfer Statement</h2>
+        <button @click="showTransferForm=true">Schedule Transfer</button>
+    </div>
     <table>
       <thead>
         <tr>
@@ -27,14 +30,21 @@
     </table>
     <p v-if="transfers.length === 0" class="message">No transfers found.</p>
   </div>
+
+  <TransferForm v-if="showTransferForm" @cancel="showTransferForm=false" @saved="handleSave"/>
 </template>
 
 <script>
+import TransferForm from "./TransferForm.vue";
 
 export default {
+  components: {
+    TransferForm
+  },
   data() {
     return {
       transfers: [],
+      showTransferForm: false,
     };
   },
   methods: {
@@ -55,6 +65,10 @@ export default {
     formatDate(data) {
       const dateObj = new Date(data);
       return isNaN(dateObj) ? "Invalid date" : dateObj.toLocaleDateString("pt-BR");
+    },
+    handleSave() {
+      this.showTransferForm=false;
+      this.loadTransfers();
     }
   },
   mounted() {
@@ -71,6 +85,13 @@ export default {
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #f9f9f9;
+}
+
+.statement-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 table {
